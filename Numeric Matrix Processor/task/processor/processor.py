@@ -110,7 +110,7 @@ def calc_determ(matrix):
     if matrix_size == 1:
         return matrix[0][0]
     if matrix_size == 2:
-        return (matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0])
+        return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
     j = 0
     determinant = 0
     for i in range(matrix_size):
@@ -137,17 +137,42 @@ def get_minor(row, column, matrix):
 
 def calculate_determinant():
     rows, columns, matrix = get_matrix()
-    # matrix = [[2, -1, 0, ],
-    #           [-1, 2, -1, ],
-    #           [0, -1, 1, ], ]
-    #
-    # matrix = [[1, 7, 7, ],
-    #           [6, 6, 4, ],
-    #           [4, 2, 1, ], ]
-
     determinant = calc_determ(matrix)
     print('The result is:')
     print(determinant)
+
+
+def get_cofactor_matrix(matrix):
+    matrix_size = len(matrix)
+    cofactor = []
+    for i in range(matrix_size):
+        vector = []
+        for j in range(matrix_size):
+            vector.append(calc_determ(get_minor(i, j, matrix)))
+        cofactor.append(vector)
+    return cofactor
+
+
+def inverse_matrix():
+    rows, columns, matrix = get_matrix()
+    if rows == 1:
+        if matrix[0][0] == 0:
+            print("This matrix doesn't have an inverse.")
+        else:
+            print('The result is:')
+            print(1 / matrix[0][0])
+        return
+    print('The result is:')
+    determinant = calc_determ(matrix)
+    if determinant == 0:
+        print("This matrix doesn't have an inverse.")
+        return
+    cofactor_matrix = get_cofactor_matrix(matrix)
+    print('determinant:', determinant)
+    for i in range(rows):
+        for j in range(columns):
+            print(cofactor_matrix[j][i] * pow(-1, i + j) / determinant, end=' ')
+        print()
 
 
 if __name__ == '__main__':
@@ -157,6 +182,7 @@ if __name__ == '__main__':
         'Multiply matrices',
         'Transpose matrix',
         'Calculate a determinant',
+        'Inverse matrix',
     ]
 
     while True:
@@ -176,4 +202,6 @@ if __name__ == '__main__':
             transpose_matrix()
         elif choice == 5:
             calculate_determinant()
+        elif choice == 6:
+            inverse_matrix()
         print()
